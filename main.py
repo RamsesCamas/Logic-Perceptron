@@ -6,7 +6,8 @@ def step(u):
     return np.heaviside(u,1)
 
 def perceptron(X,W):
-    return step(X.dot(W))
+    u = X.dot(W)
+    return step(u)
 
 def train(X,W, alpha, yd):
     errors = []
@@ -21,7 +22,7 @@ def train(X,W, alpha, yd):
       ek = yd - yc
       errors.append(ek.sum())
       i+=1
-    print(f'Entrenado en {i} epocas')
+    print(f'Entrenado en {i} iteraciones')
     return errors , Wk
 
 def normalize_arrays(total_errors, max_total_errors):
@@ -63,20 +64,18 @@ def execute_nn():
 
     get_and = yd == np.array([0,0,0,1])
     get_or = yd == np.array([0,1,1,1])
+    title = ''
     if(get_and.all()): title = 'AND'
     if(get_or.all()): title = 'OR'
 
     x = np.arange(0,len(Y_s[0]))
     my_colors = ['r','g','b','c','m']
-    for y, my_color, alpha in zip(Y_s,my_colors,alphas):
+    label_Ws = [label_W0,label_W1,label_W2,label_W3,label_W4]
+    for y, my_color, alpha,my_label, my_W in zip(Y_s,my_colors,alphas,label_Ws,W_s):
         plt.plot(x,y,color=my_color,label=f'Alpha {alpha}')
-    label_W0['text'] = f'W final con Alpha {alphas[0]}: {W_s[0]}'
-    label_W1['text'] = f'W final con Alpha {alphas[1]}: {W_s[1]}'
-    label_W2['text'] = f'W final con Alpha {alphas[2]}: {W_s[2]}'
-    label_W3['text'] = f'W final con Alpha {alphas[3]}: {W_s[3]}'
-    label_W4['text'] = f'W final con Alpha {alphas[4]}: {W_s[4]}'
+        my_label['text'] = f'W final con Alpha {alpha}: {my_W}'
     plt.legend(loc="lower right")
-    plt.xlabel('Epocas')
+    plt.xlabel('Iteraciones')
     plt.ylabel('Error')
     plt.title(title)
     plt.show()
@@ -85,7 +84,7 @@ if __name__=='__main__':
     root = Tk()
     my_font = font.Font(size=13)
     root.geometry('800x400')
-    root.title('Red Neuronal')
+    root.title('Perceptrón')
 
     label_alpha1 = Label(root, width=15, font=my_font,text='Alpha 1')
     label_alpha1.place(x=30,y=20)
