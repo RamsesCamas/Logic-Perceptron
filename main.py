@@ -13,15 +13,17 @@ def train(X,W, alpha, yd):
     errors = []
     yc = perceptron(X,W)
     ek = yd - yc
-    errors.append(ek.sum())
+    norm_err = round(np.sum(np.array([e**2 for e in ek]))**5,3)
+    errors.append(norm_err)
     Wk = W
     i = 0
-    while ek.sum() != 0:
-      Wk = Wk  + (alpha*(ek.T.dot(X)))
-      yc = perceptron(X,Wk)
-      ek = yd - yc
-      errors.append(ek.sum())
-      i+=1
+    while norm_err != 0:
+        Wk = Wk  + (alpha*(ek.T.dot(X)))
+        yc = perceptron(X,Wk)
+        ek = yd - yc
+        norm_err = round(np.sum(np.array([e**2 for e in ek]))**5,3)
+        errors.append(norm_err)
+        i+=1
     print(f'Entrenado en {i} iteraciones')
     return errors , Wk
 
