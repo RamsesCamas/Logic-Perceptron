@@ -13,7 +13,7 @@ def train(X,W, alpha, yd):
     errors = []
     yc = perceptron(X,W)
     ek = yd - yc
-    norm_err = round(np.sum(np.array([e**2 for e in ek]))**5,3)
+    norm_err = np.linalg.norm(ek)
     errors.append(norm_err)
     Wk = W
     i = 0
@@ -21,7 +21,7 @@ def train(X,W, alpha, yd):
         Wk = Wk  + (alpha*(ek.T.dot(X)))
         yc = perceptron(X,Wk)
         ek = yd - yc
-        norm_err = round(np.sum(np.array([e**2 for e in ek]))**5,3)
+        norm_err = np.linalg.norm(ek)
         errors.append(norm_err)
         i+=1
     print(f'Entrenado en {i} iteraciones')
@@ -64,11 +64,7 @@ def execute_nn():
     max_total_errors = len(max(total_errors,key=len))
     Y_s = normalize_arrays(total_errors,max_total_errors)
 
-    get_and = yd == np.array([0,0,0,1])
-    get_or = yd == np.array([0,1,1,1])
-    title = ''
-    if(get_and.all()): title = 'AND'
-    if(get_or.all()): title = 'OR'
+    title = 'Evolución de la norma del error'
 
     x = np.arange(0,len(Y_s[0]))
     my_colors = ['r','g','b','c','m']
@@ -76,7 +72,7 @@ def execute_nn():
     for y, my_color, alpha,my_label, my_W in zip(Y_s,my_colors,alphas,label_Ws,W_s):
         plt.plot(x,y,color=my_color,label=f'Alpha {alpha}')
         my_label['text'] = f'W final con Alpha {alpha}: {my_W}'
-    plt.legend(loc="lower right")
+    plt.legend(loc="upper right")
     plt.xlabel('Iteraciones')
     plt.ylabel('Error')
     plt.title(title)
