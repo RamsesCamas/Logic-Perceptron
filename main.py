@@ -11,20 +11,14 @@ def perceptron(X,W):
 
 def train(X,W, alpha, yd):
     errors = []
-    yc = perceptron(X,W)
-    ek = yd - yc
-    norm_err = np.linalg.norm(ek)
-    errors.append(norm_err)
+    norm_err = 1
     Wk = W
-    i = 0
     while norm_err != 0:
-        Wk = Wk  + (alpha*(ek.T.dot(X)))
         yc = perceptron(X,Wk)
         ek = yd - yc
         norm_err = np.linalg.norm(ek)
+        Wk = Wk  + (alpha*(ek.T.dot(X)))
         errors.append(norm_err)
-        i+=1
-    print(f'Entrenado en {i} iteraciones')
     return errors , Wk
 
 def normalize_arrays(total_errors, max_total_errors):
@@ -40,9 +34,22 @@ def normalize_arrays(total_errors, max_total_errors):
     return Y_s
 
 def execute_nn():
-    X = np.array([[1,0,0],[1,0,1],[1,1,0],[1,1,1]])
-    W0 = np.random.rand(3)
-    label_FW['text'] = f'W0: {W0}'
+    X_dos_entradas = np.array([[1,0,0],
+                               [1,0,1],
+                               [1,1,0],
+                               [1,1,1]])
+    W0_dos_entradas = np.random.rand(3)
+    X_tres_entradas = np.array([[1,0,0,0],
+                                [1,0,0,1],
+                                [1,0,1,0],
+                                [1,0,1,1],
+                                [1,1,0,0],
+                                [1,1,0,1],
+                                [1,1,1,0],
+                                [1,1,1,1]])
+
+    W0_tres_entradas = np.random.rand(4)
+    label_FW['text'] = f'W0: {W0_dos_entradas}'
     A1 = float(entry_alpha1.get())
     A2 = float(entry_alpha2.get())
     A3 = float(entry_alpha3.get())
@@ -50,15 +57,12 @@ def execute_nn():
     A5 = float(entry_alpha5.get())
     alphas = [A1,A2,A3,A4,A5] 
 
-    yd0 = int(entry_Y0.get())
-    yd1 = int(entry_Y1.get())
-    yd2 = int(entry_Y2.get())
-    yd3 = int(entry_Y3.get())
-    yd = np.array([yd0,yd1,yd2,yd3]) 
+    Y = str(entry_yd.get())
+    Yd = np.array(list(map(int, Y.split(','))))
 
     total_errors, W_s = [] , []
     for alpha in alphas:
-        error, F_W = train(X,W0,alpha,yd) 
+        error, F_W = train(X_tres_entradas,W0_tres_entradas,alpha,Yd) 
         total_errors.append(error)
         W_s.append(F_W)
     max_total_errors = len(max(total_errors,key=len))
@@ -109,14 +113,10 @@ if __name__=='__main__':
     label_Ys = Label(root, width=15, font=my_font, text='Y determinada:')
     label_Ys.place(x=20,y=150)
 
-    entry_Y0 = Entry(root,width=8, font=my_font)
-    entry_Y0.place(x=170,y=150)
-    entry_Y1 = Entry(root,width=8, font=my_font)
-    entry_Y1.place(x=270,y=150)
-    entry_Y2 = Entry(root,width=8, font=my_font)
-    entry_Y2.place(x=370,y=150)
-    entry_Y3 = Entry(root,width=8, font=my_font)
-    entry_Y3.place(x=470,y=150)
+    entry_yd = Entry(root,width=50,font=my_font)
+    entry_yd.place(x=350,y=200)
+
+    label_yd = Label(root,width=30,font=my_font,text='Y determinada').place(x=350,y=170)
 
     btn_exec_nn = Button(root, width=14, text='Ejecutar', font=my_font, command=execute_nn)
     btn_exec_nn.place(x=600,y=145)
